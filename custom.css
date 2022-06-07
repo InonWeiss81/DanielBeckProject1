@@ -1,0 +1,83 @@
+﻿/* An external style sheet can be written in any text editor. The file should not contain any html tags. The style sheet file must be saved with a .css extension. */
+
+/* Element Selector */
+.background_img {
+    background-image: url("https://images.ctfassets.net/ihlmn42cjuv0/6Pr3W2fbjt5q9LMAErADrN/9949396b3ef766a81425f5683454ff3c/hero-amsterdam.jpg?fit=fill&w=1346&h=838&fm=jpg&q=93");
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+    margin-top: 10px;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+/* For styling NavBar */
+.navbar.navbar-expand-lg.navbar-light li a {
+    color: white;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+    .navbar.navbar-expand-lg.navbar-light li a:hover {
+        color: white;
+        border-bottom: 3px solid white;
+    }
+
+.checked {
+    color: rgb(0,132,137)
+}
+
+.btn-primary.btn-lg {
+    background-color: rgb(255,90,95);
+    border-color: rgb(255,90,95);
+    font-size: 16px;
+}
+
+.container li a {
+    color: #767676;
+}
+
+.btn.btn-outline-primary.rounded.nohover {
+    pointer-events: none;
+}
+
+.btn.btn-primary.new {
+    background-color: rgb(0, 106, 112);
+    border: none;
+    font-size: 12px;
+    padding: 1px 4px;
+}
+
+.container mt-3 rounded {
+    margin: 150px;
+    max-width: 420px;
+    padding: 30px 30px 60px 30px;
+    background-color: white;
+    font-family: Helvetica;
+    font-weight: 600; 
+    color: #484848;
+    
+}
+
+.btn btn-primary btn-lg nav-link {
+    float: right
+}
+.h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.input-group-prepend{
+    font-size: small
+
+}
+
+.input-group {
+    font-size: small
+}
+
+.form-group {
+    font-size: small;
+}

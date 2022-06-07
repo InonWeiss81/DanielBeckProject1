@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="login-css.css">
+
+    <script>
+
+        function init() {
+
+            if (localStorage["Cgroup50-signUP"] != undefined) {
+                UserArr = JSON.parse(localStorage["Cgroup50-signUP"]);
+            }
+            else {
+                UserArr = [];
+            }
+
+        }
+
+        function storeToLS() {
+
+            NewUser = {
+
+                name: document.getElementById("login").value,
+                password: document.getElementById("password").value
+            }
+
+            UserArr.push(NewUser);
+
+            localStorage["Cgroup50-signUP"] = JSON.stringify(UserArr);
+
+        }
+
+
+    </script>
+</head>
+
+<body onload="init()">
+
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+
+            <!-- Login Form -->
+            <form>
+                <input type="text" id="login" class="fadeIn second" name="login" placeholder="new user name" />
+                <input type="text" id="password" class="fadeIn third" name="login" placeholder="new password">
+            </form>
+
+            <input type="button" class="btn btn-primary btn-lg" value="signUp" onclick="storeToLS();location.href = 'index.html'" />
+            <input type=button onClick="location.href = 'HtmlPage.html'" class="btn btn-primary btn-lg nav-link" value="Go to home page" href="HtmlPage.html" />
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

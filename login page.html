@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="login-css.css">
+
+    <script>
+        function userLogin(e) {
+            const username = document.getElementById("login").value;
+            const password = document.getElementById("password").value;
+            const myUsers = JSON.parse(localStorage.getItem("Cgroup50-signUP"));
+            let loggedInState = { loggedInStatus: false, username: null, password: null };
+            myUsers.map(user => {
+                user.name == username ? user.password == password ? (loggedInState.loggedInStatus = true) : null : null
+                if (loggedInState.loggedInStatus & password != "" && username != "") {
+                    loggedInState.username = username;
+                    loggedInState.password = password;
+                }
+            })
+            if (loggedInState.loggedInStatus) {
+                localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(loggedInState));
+                location.href = "index.html"
+            } else {
+                alert("Your account was not found, please Sign Up!");
+            }
+        }
+
+
+    </script>
+</head>
+
+
+<body>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+
+            <!-- Login Form -->
+            <form>
+                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+                <input type="button" onclick="userLogin()" class="btn btn-primary btn-lg" value="Log In">
+            </form>
+
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover">New user?</a>
+                <input type=button onClick="location.href='SignUP.html'" class="btn btn-primary btn-lg nav-link" value="signUp" href="login page.html">
+                <input type=button onClick="location.href = 'HtmlPage.html'" class="btn btn-primary btn-lg nav-link" value="Go to home page" href="HtmlPage.html" />
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
