@@ -1,3 +1,8 @@
 ﻿.d-none {
     display: none !important;
 }
+
+.active-link {
+    font-weight: bold !important;
+    color: #ffde64 !important;
+}

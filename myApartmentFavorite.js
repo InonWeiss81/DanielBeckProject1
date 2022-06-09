@@ -2,10 +2,21 @@ var cGroup50 = 'Cgroup50-';
 var userFavoritesTxt = 'userFavorites';
 var loggedInUserTxt = 'loggedInUser';
 
+$(function () {
+    getFavouriteItems();
+});
 
 getFavouriteItems = () => {
     const myItems = getFavCategoryItems();
     $("#ph").empty();
+    if (myItems.length == 0) {
+        let noFavsMassage1 = 'There are no items in Favorites list. Go to ';
+        let noFavsMassage2 = 'All Apartments page';
+        let noFavsMassage3 = ' and add some appartments to your Favorites';
+        let noFavsMassageElement = '<div class="col-12 col-md-12 text-center">' +
+            `${noFavsMassage1}` + '<a href="AllApartments.html">' + `${noFavsMassage2}` + '</a>' + `${noFavsMassage3}` + '</div>';
+        $("#ph").append(noFavsMassageElement);
+    }
     for (let i = 0; i < myItems.length; i++) {
         let key = myItems[i]["id"];
 
@@ -76,22 +87,41 @@ function getFavCategoryItems() {
 }
 
 RemoveFromFavourites = (id) => {
-    const favorite = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser")).favouriteItems;
-    const Newfavorite = [];
-    favorite.forEach(cItem => {
-        if (cItem.id != id) {
-            Newfavorite.push(cItem)
-        };
-    });
-    const oldUserDetail = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    localStorage.removeItem("Cgroup50-LoggedInUser");
-    const newUserDetails = { "Cgroup50-LoggedInUser": oldUserDetail["Cgroup50 - LoggedInUser"], "favouriteItems": Newfavorite };
-    localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails))
+    var loggedInUserId = localStorage.getItem(cGroup50 + loggedInUserTxt);
 
+    var allUsersFavorites = [];
 
+    var allUsersFavoritesValue = localStorage.getItem(cGroup50 + userFavoritesTxt);
+
+    if (allUsersFavoritesValue && allUsersFavoritesValue.length > 0) {
+        allUsersFavorites = JSON.parse(allUsersFavoritesValue);
+        var userFavoritesItem = {};
+        var isUserFavoritesExists = false;
+        for (var i = 0; i < allUsersFavorites.length; i++) {
+            var elem = allUsersFavorites[i];
+            if (elem.userId == loggedInUserId) {
+                userFavoritesItem = elem;
+                isUserFavoritesExists = true;
+                break;
+            }
+        }
+        var favorites = [];
+        if (isUserFavoritesExists) {
+            favorites = userFavoritesItem.favorites;
+            for (var i = 0; i < favorites.length; i++) {
+                var favId = favorites[i];
+                if (favId == id) {
+                    favorites.splice(i, 1);
+                    break;
+                }
+            }
+            localStorage.setItem(cGroup50 + userFavoritesTxt, JSON.stringify(allUsersFavorites));
+            getFavouriteItems();
+        }
+    }        
 }
 
-function RentApartment(id) {
+function RentApartment(id) { // TODO
     myApartment = [];
     category_items.map((cItem) => {
         if (cItem.id == id) {

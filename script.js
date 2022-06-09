@@ -15,69 +15,83 @@ let checkout_date;
 let myFavourites = [];
 let myBookings = [];
 
-for (let i = 0; i < category_items.length; i++) {
-  let floatPrice = parseFloat(
-    category_items[i]["price"].replace(" ", "").replace("$", "")
-  );
-  let bedrooms = parseFloat(category_items[i]["bedrooms"]);
 
-  if (floatPrice < MIN) {
-    MIN = floatPrice;
-  }
-  if (floatPrice > MAX) {
-    MAX = floatPrice;
-  }
-  if (bedrooms > max_bedrooms) {
-    max_bedrooms = bedrooms;
-  }
-}
-
-document.getElementById("min-price").value = MIN;
-document.getElementById("max-price").value = MAX;
-
-document.getElementById("min-price").step = MAX % 4;
-document.getElementById("max-price").step = MAX % 4;
-
-document.getElementById("min-price").min = MIN;
-document.getElementById("min-price").max = MAX / 2;
-
-document.getElementById("max-price").min = MAX / 2;
-document.getElementById("max-price").max = MAX;
-
-document.getElementById("max-price-txt").innerHTML = `$${MIN}`;
-document.getElementById("max-price-txt").innerHTML = `$${MAX}`;
-
-
-$(document).ready(function () {
+$(function () {
+    setFilters();
+    setEvents();
+    setModalEvents();
   showAllItems();
 });
 
-$("#min-price").on("change mousemove", function () {
-  min_price = parseInt($("#min-price").val());
-  $("#min-price-txt").text("$" + min_price);
-  showItemsFiltered();
-});
+function showAllItems() {
+    $("#display-items-div").empty();
+    for (let i = 0; i < category_items.length; i++) {
+        let key = category_items[i]["id"];
+        $("#display-items-div").append(card(category_items[i], key));
+    }
+}
 
-$("#max-price").on("change mousemove", function () {
-  max_price = parseInt($("#max-price").val());
-  $("#max-price-txt").text("$" + max_price);
-  showItemsFiltered();
-});
+function setFilters() {
+    for (let i = 0; i < category_items.length; i++) {
+        let floatPrice = parseFloat(
+            category_items[i]["price"].replace(" ", "").replace("$", "")
+        );
+        let bedrooms = parseFloat(category_items[i]["bedrooms"]);
 
-$("#rating").on("change mousemove", function () {
-  review_scores_rating = parseInt($("#rating").val());
-  $("#rating-txt").text(review_scores_rating);
-  showItemsFiltered();
-});
+        if (floatPrice < MIN) {
+            MIN = floatPrice;
+        }
+        if (floatPrice > MAX) {
+            MAX = floatPrice;
+        }
+        if (bedrooms > max_bedrooms) {
+            max_bedrooms = bedrooms;
+        }
+    }
 
-document.getElementById("rooms").max = max_bedrooms;
+    document.getElementById("min-price").value = MIN;
+    document.getElementById("max-price").value = MAX;
 
-$("#rooms").on("change mousemove", function () {
-  bedrooms_number = parseInt($("#rooms").val());
-  $("#room-txt").text(bedrooms_number);
-  showItemsFiltered();
-});
+    document.getElementById("min-price").step = MAX % 4;
+    document.getElementById("max-price").step = MAX % 4;
 
+    document.getElementById("min-price").min = MIN;
+    document.getElementById("min-price").max = MAX / 2;
+
+    document.getElementById("max-price").min = MAX / 2;
+    document.getElementById("max-price").max = MAX;
+
+    document.getElementById("max-price-txt").innerHTML = `$${MIN}`;
+    document.getElementById("max-price-txt").innerHTML = `$${MAX}`;
+}
+
+function setEvents() {
+    $("#min-price").on("change mousemove", function () {
+        min_price = parseInt($("#min-price").val());
+        $("#min-price-txt").text("$" + min_price);
+        showItemsFiltered();
+    });
+
+    $("#max-price").on("change mousemove", function () {
+        max_price = parseInt($("#max-price").val());
+        $("#max-price-txt").text("$" + max_price);
+        showItemsFiltered();
+    });
+
+    $("#rating").on("change mousemove", function () {
+        review_scores_rating = parseInt($("#rating").val());
+        $("#rating-txt").text(review_scores_rating);
+        showItemsFiltered();
+    });
+
+    document.getElementById("rooms").max = max_bedrooms;
+
+    $("#rooms").on("change mousemove", function () {
+        bedrooms_number = parseInt($("#rooms").val());
+        $("#room-txt").text(bedrooms_number);
+        showItemsFiltered();
+    });
+}
 
 function openModal(id) {
   console.log(id);
@@ -113,7 +127,8 @@ function openModal(id) {
   document.getElementById("modal-1").innerHTML = item_content;
 }
 
-function addToFavourites(id) {
+//                                               ****************** ADD TO FAVORITES *****************
+function addToFavourites(id) {  
 
     // check if id exists in user favs
     // get current user id
@@ -162,6 +177,7 @@ function addToFavourites(id) {
     localStorage.setItem(cGroup50 + userFavoritesTxt, JSON.stringify(allUsersFavorites));
 }
 
+//                                               ****************** ADD TO BOOKINGS *****************
 function addToBooking(id) {
     category_items.map((cItem) => {
         if (cItem.id == id) {
@@ -197,13 +213,7 @@ function setDates() {
   alert("Dates Saved!");
   showItemsFiltered();
 }
-function showAllItems() {
-  $("#display-items-div").empty();
-  for (let i = 0; i < category_items.length; i++) {
-    let key = category_items[i]["id"];
-    $("#display-items-div").append(card(category_items[i], key));
-  }
-}
+
 
 function showItemsFiltered() {
   $("#display-items-div").empty();
@@ -242,7 +252,7 @@ function checkAvilabilty(category_item) {
 
 
 
-(function () {
+function setModalEvents () {
   document.querySelectorAll(".open-modal").forEach(function (trigger) {
     trigger.addEventListener("click", function () {
       hideAllModalWindows();
@@ -259,7 +269,7 @@ function checkAvilabilty(category_item) {
   document.querySelector(".modal-fader").addEventListener("click", function () {
     hideAllModalWindows();
   });
-})();
+}
 
 function hideAllModalWindows() {
   var modalFader = document.querySelector(".modal-fader");
