@@ -1,6 +1,8 @@
 ﻿var cGroup50 = 'Cgroup50-';
 var userFavoritesTxt = 'userFavorites';
+var userBookingsTxt = 'userBookings';
 var loggedInUserTxt = 'loggedInUser';
+var tempBookTxt = 'tempBook';
 
 
 let min_price = 0;
@@ -17,11 +19,16 @@ let myBookings = [];
 
 
 $(function () {
+    clearSessionStorage();
     setFilters();
     setEvents();
     setModalEvents();
-  showAllItems();
+    showAllItems();
 });
+
+function clearSessionStorage() {
+    sessionStorage.clear();
+}
 
 function showAllItems() {
     $("#display-items-div").empty();
@@ -30,6 +37,8 @@ function showAllItems() {
         $("#display-items-div").append(card(category_items[i], key));
     }
 }
+
+//
 
 function setFilters() {
     for (let i = 0; i < category_items.length; i++) {
@@ -93,42 +102,9 @@ function setEvents() {
     });
 }
 
-function openModal(id) {
-  console.log(id);
-  const modalItem = category_items.find((item) => item.id == id);
-  console.log(modalItem);
-
-  document.querySelector(".modal-fader").className += " active";
-  document.querySelector("#modal-1").className += " active";
-  function showAll() {
-    modalItem.foreach((field) => {
-      return "<br>" + "field " + modalItem[field];
-    });
-  }
-
-  function showAmenities(amenities) {
-    let amenitiesToShow = [];
-    amenitiesToShow = amenities;
-    if (amenitiesToShow && amenitiesToShow.length > 0) {
-      amenitiesToShow.forEach((em) => {
-        +"<br>" + "em ";
-      });
-    }
-  }
-  amenitiesTxt = modalItem["amenities"].replace(/[^ ,a-z0-9]/gi, "");
-``
-  let item_content =
-    '<div class="col-12 col-md-12 text-center product-card"><b>' +
-    "Amenities " +
-    `<br>` +
-    amenitiesTxt +
-    `<br>` +
-    '<button onClick={hideAllModalWindows()} class="modal-btn modal-hide">Close</button>';
-  document.getElementById("modal-1").innerHTML = item_content;
-}
 
 //                                               ****************** ADD TO FAVORITES *****************
-function addToFavourites(id) {  
+function addToFavourites(id) {
 
     // check if id exists in user favs
     // get current user id
@@ -169,7 +145,7 @@ function addToFavourites(id) {
             userFavoritesItem = { userId: loggedInUserId, favorites: [id] };
             allUsersFavorites.push(userFavoritesItem);
         }
-        
+
     }
     else {
         allUsersFavorites.push({ userId: loggedInUserId, favorites: [id] });
@@ -177,213 +153,131 @@ function addToFavourites(id) {
     localStorage.setItem(cGroup50 + userFavoritesTxt, JSON.stringify(allUsersFavorites));
 }
 
-//                                               ****************** ADD TO BOOKINGS *****************
-function addToBooking(id) {
-    category_items.map((cItem) => {
-        if (cItem.id == id) {
-            let doesExist = false;
-            for (let i = 0; i < myBookings.length; i++) {
-                if (myBookings[i]["id"] == id) doesExist = true;
-            }
-            if (!doesExist) myBookings.push(cItem);
-            console.log(JSON.stringify(cItem));
-        }
-    });
-    const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    console.log(myUser);
-    const newUserDetails = {
-        "Cgroup50-LoggedInUser": myUser,
-        bookingItems: myBookings,
-    };
-    console.log(newUserDetails);
-    localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails));
-}
 
-function filterCategoryItemsByDate() {
-  console.log("hey");
-  const checkinDate = document.getElementById("checkin").value;
-  console.log(checkinDate);
-  // const checkoutDate = document.getElementById("checkout").value;
-  //    console.log(document.getElementById("checkin").value);
-}
+//                                               ****************** SET DATES *****************
 function setDates() {
-  console.log("setDates");
-  checkin_date = document.getElementById("checkin").value;
-  checkout_date = document.getElementById("checkout").value;
-  alert("Dates Saved!");
-  showItemsFiltered();
+    checkin_date = document.getElementById("checkin").value;
+    checkout_date = document.getElementById("checkout").value;
+    if (checkin_date.length == 0 || checkout_date.length == 0) {
+        alert('Please select valid dates');
+        return;
+    }
+    var tempBook = { 
+        itemId: 0,
+        fromDate: checkin_date,
+        toDate: checkout_date
+    }
+    sessionStorage.setItem(cGroup50 + tempBookTxt, JSON.stringify(tempBook));
+    alert("Dates Saved!");
+    showItemsFiltered();
 }
 
 
 function showItemsFiltered() {
-  $("#display-items-div").empty();
-  for (let i = 0; i < category_items.length; i++) {
-    let key = category_items[i]["id"];
-    if (
-      parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) <= max_price &&
-      parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) >= min_price &&
-      parseFloat(category_items[i]["review_scores_rating"]) >= review_scores_rating &&
-      parseFloat(category_items[i]["bedrooms"]) >= bedrooms_number &&
-      checkAvilabilty(category_items[i])
-    ) {
-      $("#display-items-div").append(card(category_items[i], key));
+    $("#display-items-div").empty();
+    for (let i = 0; i < category_items.length; i++) {
+        let key = category_items[i]["id"];
+        if (
+            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) <= max_price &&
+            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) >= min_price &&
+            parseFloat(category_items[i]["review_scores_rating"]) >= review_scores_rating &&
+            parseFloat(category_items[i]["bedrooms"]) >= bedrooms_number &&
+            checkAvilabilty(category_items[i])
+        ) {
+            $("#display-items-div").append(card(category_items[i], key));
+        }
     }
-  }
 }
 
 function checkAvilabilty(category_item) {
     let isRoomAvilable = true;
     const checkinDate = new Date(checkin_date);
     const checkoutDate = new Date(checkout_date);
-    if(category_item["reserved_dates"] && category_item["reserved_dates"].length > 0 ){
-        category_item["reserved_dates"].forEach(bookingDates=>{
-                const bookingCheckinDate = new Date(bookingDates.checkin_date)
-                const bookingCheckoutDate = new Date(bookingDates.checkout_date)
-                if(bookingCheckinDate >= checkinDate && bookingCheckinDate <= checkoutDate){
-                    isRoomAvilable = false;
-                }
-                if(bookingCheckoutDate >= checkinDate && bookingCheckoutDate <= checkoutDate){
-                    isRoomAvilaÅble = false;
-                }
+    if (category_item["reserved_dates"] && category_item["reserved_dates"].length > 0) {
+        category_item["reserved_dates"].forEach(bookingDates => {
+            const bookingCheckinDate = new Date(bookingDates.checkin_date)
+            const bookingCheckoutDate = new Date(bookingDates.checkout_date)
+            if (bookingCheckinDate >= checkinDate && bookingCheckinDate <= checkoutDate) {
+                isRoomAvilable = false;
+            }
+            if (bookingCheckoutDate >= checkinDate && bookingCheckoutDate <= checkoutDate) {
+                isRoomAvilaÅble = false;
+            }
         })
-    } 
+    }
     return isRoomAvilable;
 }
 
 
 
-function setModalEvents () {
-  document.querySelectorAll(".open-modal").forEach(function (trigger) {
-    trigger.addEventListener("click", function () {
-      hideAllModalWindows();
-      showModalWindow(this);
+function setModalEvents() {
+    document.querySelectorAll(".open-modal").forEach(function (trigger) {
+        trigger.addEventListener("click", function () {
+            hideAllModalWindows();
+            showModalWindow(this);
+        });
     });
-  });
 
-  document.querySelectorAll(".modal-hide").forEach(function (closeBtn) {
-    closeBtn.addEventListener("click", function () {
-      hideAllModalWindows();
+    document.querySelectorAll(".modal-hide").forEach(function (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            hideAllModalWindows();
+        });
     });
-  });
 
-  document.querySelector(".modal-fader").addEventListener("click", function () {
-    hideAllModalWindows();
-  });
+    document.querySelector(".modal-fader").addEventListener("click", function () {
+        hideAllModalWindows();
+    });
 }
 
-function hideAllModalWindows() {
-  var modalFader = document.querySelector(".modal-fader");
-  var modalWindows = document.querySelectorAll(".modal-window");
-
-  if (modalFader.className.indexOf("active") !== -1) {
-    modalFader.className = modalFader.className.replace("active", "");
-  }
-
-  modalWindows.forEach(function (modalWindow) {
-    if (modalWindow.className.indexOf("active") !== -1) {
-      modalWindow.className = modalWindow.className.replace("active", "");
-    }
-  });
-}
-
-function addBooking(id) {
-  console.log("addBooking");
-  const bookingItem = category_items.find((item) => item.id == id);
-  if (bookingItem) {
-    if (!bookingItem["reserved_dates"]) {
-      bookingItem["reserved_dates"] = [];
-    }
-    if (!checkin_date || !checkout_date) {
-      alert("Please select dates");
-      return;
-    }
-    const choosenDates = {
-      checkin_date,
-      checkout_date,
-    };
-    bookingItem["reserved_dates"].push(choosenDates);
-    myBookings.push(bookingItem);
-    console.log(JSON.stringify(bookingItem));
-
-    // const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    // console.log(myUser);
-    // if (!myUser) {
-    //   const newUser = {
-    //     myFavourites,
-    //     myBookings,
-    //   };
-    //   localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUser));
-    // } else {
-    //   myUser.myBookings = myBookings;
-    //   localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(myUser));
-    // }
-    
-    const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    console.log(myUser);
-    const newUserDetails = {
-      "Cgroup50-LoggedInUser": myUser,
-      favouriteItems: myFavourites,
-      myBookings,
-    };
-    console.log(newUserDetails);
-    localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails));
-    alert('Book Success!')
-  }
-}
-
+//                                               ****************** RENT APARTMENT *****************
 function RentApartment(id) {
-    myApartment = [];
-    category_items.map((cItem) => {
-        if (cItem.id == id) {
-            let doesExist = false;
-            for (let i = 0; i < myApartment.length; i++) {
-                if (myApartment[i]["id"] == id)
-                    doesExist = true;
-            }
-            if (!doesExist)
-                myApartment.push(cItem)
-            console.log(JSON.stringify(cItem))
+    var tempBookValue = sessionStorage.getItem(cGroup50 + tempBookTxt);
+    if (tempBookValue && tempBookValue.length > 0) {
+        var tempBook = JSON.parse(tempBookValue);
+        // check valid dates
+        if (tempBook.fromDate.length == 0 || tempBook.toDate.length == 0) {
+            alert('Please set valid dates');
+            return;
         }
+        tempBook.itemId = id;
+        sessionStorage.setItem(cGroup50 + tempBookTxt, JSON.stringify(tempBook));
+        location.href = 'Payment.html';
+    }
+    else {
+        alert('Please set valid dates');
+    }
 
-    })
-    const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    console.log(myUser)
-    const newUserDetails = { "Cgroup50-LoggedInUser": myUser, "myApartment": myApartment };
-    console.log(newUserDetails)
-    localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails));
-    localStorage.setItem("booked-apartment-id", id);
-    location.href = 'Payment.html';
 }
 
 function card(category_item, key) {
-  let item_content =
-    '<div class="col-12 col-md-12 text-center product-card"' +
-    "<div><b>" +
-    category_item["name"] +
-    "<br>" +
-    "ID " +
-    category_item["id"] +
-    "<br>" +
-    "Rating " +
-    category_item["review_scores_rating"] +
-    "<br>" +
-    "Rooms " +
-    category_item["bedrooms"] +
-    `<br>` +
-    category_item["price"] +
-    `<br>` +
-    '</b><br>'+
-    '<img src="' +
-    category_item["picture_url"] +
-    '"alt="picture_url" />' +
-      `<p><br>` +
-      `<button class="button" onclick={addToFavourites(${key})}>Add to favorites</button>` +
-    "</p>" +
-    `<p><br>` +
-      `<button class="button" onclick={RentApartment(${key})}>Book</button>` +"</p>" +
-      "<p>" +
-    `<br>` +
-    `<button  class="button" onclick={openModal(${key})}>More Details</button>` +
-    "</p></div></button>";
-  return item_content;
+    let item_content =
+        '<div class="col-12 col-md-12 text-center product-card"' +
+        "<div><b>" +
+        category_item["name"] +
+        "<br>" +
+        "ID " +
+        category_item["id"] +
+        "<br>" +
+        "Rating " +
+        category_item["review_scores_rating"] +
+        "<br>" +
+        "Rooms " +
+        category_item["bedrooms"] +
+        `<br>` +
+        category_item["price"] +
+        `<br>` +
+        '</b><br>' +
+        '<img src="' +
+        category_item["picture_url"] +
+        '"alt="picture_url" />' +
+        `<p><br>` +
+        `<button class="button" onclick={addToFavourites(${key})}>Add to favorites</button>` +
+        "</p>" +
+        `<p><br>` +
+        `<button class="button" onclick={RentApartment(${key})}>Book</button>` + "</p>" +
+        "<p>" +
+        `<br>` +
+        `<button  class="button" onclick={openModal(${key})}>More Details</button>` +
+        "</p></div></button>";
+    return item_content;
 }

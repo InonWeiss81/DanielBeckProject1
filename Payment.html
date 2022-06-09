@@ -15,50 +15,9 @@
 
     <link href="Payment.css" rel="stylesheet" />
     <link href="custom.css" rel="stylesheet" />
-    <script src="Script.js"></script>
+    <script src="./modal.js"></script>
+    <script src="./Payment.js"></script>
 
-
-    <script>
-
-        function addToBooking() {
-            const id = localStorage.getItem("booked-apartment-id");
-            category_items.map((cItem) => {
-                if (cItem.id == id) {
-                    let doesExist = false;
-                    for (let i = 0; i < myBookings.length; i++) {
-                        if (myBookings[i]["id"] == id) doesExist = true;
-                    }
-                    if (!doesExist) myBookings.push(cItem);
-                    console.log(JSON.stringify(cItem));
-                }
-            });
-            const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-            console.log(myUser);
-            const newUserDetails = {
-                "Cgroup50-LoggedInUser": myUser,
-                bookingItems: myBookings,
-            };
-            console.log(newUserDetails);
-            localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails));
-        }
-
-        RemoveFrommyApartment = (id) => {
-            const NewApartment = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser")).myApartment;
-            const NewMyApartment = [];
-            NewApartment.forEach(cItem => {
-                if (cItem.id != id) {
-                    NewMyApartment.push(cItem)
-                };
-            });
-            const oldUserDetail = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-            localStorage.removeItem("Cgroup50-LoggedInUser");
-            const newUserDetails = { "Cgroup50-LoggedInUser": oldUserDetail["Cgroup50 - LoggedInUser"], "NewMyApartment": NewMyApartment };
-            localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails))
-            alert('Your order canceled')
-
-        }
-
-    </script>
 </head>
 
 
@@ -123,7 +82,7 @@
                         </div>
                     </div>
                     <form>
-                        <button type="button" class="btn btn-danger" onclick="addToBooking() , location.href = 'myApartmentBook.html'">Submit</button>
+                        <button type="button" class="btn btn-danger" onclick="addToBooking()">Submit</button>
                         <button type="button" class="btn btn-danger" onclick="RemoveFrommyApartment() , location.href = 'HomePage.html'">Cancel</button>
                     </form>
                 </div>

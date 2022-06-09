@@ -120,26 +120,3 @@ RemoveFromFavourites = (id) => {
         }
     }        
 }
-
-function RentApartment(id) { // TODO
-    myApartment = [];
-    category_items.map((cItem) => {
-        if (cItem.id == id) {
-            let doesExist = false;
-            for (let i = 0; i < myApartment.length; i++) {
-                if (myApartment[i]["id"] == id)
-                    doesExist = true;
-            }
-            if (!doesExist)
-                myApartment.push(cItem)
-            console.log(JSON.stringify(cItem))
-        }
-
-    })
-    const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-    console.log(myUser)
-    const newUserDetails = { "Cgroup50-LoggedInUser": myUser, "myApartment": myApartment };
-    console.log(newUserDetails)
-    localStorage.setItem("Cgroup50-LoggedInUser", JSON.stringify(newUserDetails));
-    location.href = 'Payment.html';
-}
