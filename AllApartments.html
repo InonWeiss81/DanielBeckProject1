@@ -10,49 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css'>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./sharedStyles.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-    <script>
-        const onLoad = () => {
-            const loginLink = document.getElementById("loginLink");
-            const logOutLink = document.getElementById("logoutLink");
-            const myUser = JSON.parse(localStorage.getItem("Cgroup50-LoggedInUser"));
-            console.log(myUser.loggedInStatus)
-            if (myUser && myUser.loggedInStatus) {
-                loginLink.style.display = "none"
-                logoutLink.style.display = "visible"
-            } else {
-                logoutLink.style.display = "none"
-                loginLink.style.display = "visible"
-            }
-            
-        }
-
-        const onLogOut = () => {
-            localStorage.removeItem("LoggedInUser");
-        }
-    </script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <script src="./sharedData.js"></script>
 </head>
 
-<body onload="onLoad()" class="background_img">
+<body class="background_img">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="collapse navbar-collapse">
-
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="HtmlPage.html">Home page</a></li>
-
-                <li id="loginLink" class="nav-item"><a class="nav-link" href="login page.html">Login</a></li>
-                <li id="logoutLink" class="nav-item"><a onclick="onLogOut()" class="nav-link" href="login page.html">Log Out</a></li>
-                <li class="nav-item"><a class="nav-link" href="myApartmentFavorite.html">My Favorites</a></li>
-                <li class="nav-item"><a class="nav-link" href="myApartmentBook.html">My Bookings</a></li>
-                <li class="nav-item"><a class="nav-link" href="index.html">All apartments</a></li>
+                <li id="home-page-tab" class="nav-item d-none"><a class="nav-link" href="HomePage.html">Home page</a></li>
+                <li id="login-page-tab" class="nav-item d-none"><a class="nav-link" href="LoginPage.html">Login</a></li>
+                <li id="logout-tab" class="nav-item d-none"><a class="nav-link" href="#" onclick="logout();">Logout</a></li>
+                <li id="all-appartments-tab" class="nav-item d-none"><a class="nav-link" href="AllApartments.html">All apartments</a></li>
+                <li id="my-favorites-tab" class="nav-item d-none"><a class="nav-link" href="myApartmentFavorite.html">My Favorites</a></li>
+                <li id="my-bookings-tab" class="nav-item d-none"><a class="nav-link" href="myApartmentBook.html">My Bookings</a></li>
             </ul>
         </div>
     </nav>
     <div class="container">
         <div class="row">
-            <div class=" col-12 col-md-2">
+            <div class="col-12 col-md-2">
                 <div class="card px-2">
                     <h2 class="text-center">Filter by</h2>
                     <hr>
@@ -108,6 +88,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.min.js'></script>
     <script src="./script.js"></script>
+    <script src="./navbarItems.js"></script>
 </body>
 
 </html>

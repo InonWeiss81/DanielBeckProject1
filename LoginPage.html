@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="login-css.css">
+
+    <script src="./LoginPage.js"></script>
+</head>
+
+
+<body>
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+
+            <!-- Login Form -->
+            <form>
+                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+                <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
+                <input type="button" onclick="userLogin()" class="btn btn-primary btn-lg" value="Log In">
+            </form>
+
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover">New user?</a>
+                <input type=button onClick="location.href='SignUP.html'" class="btn btn-primary btn-lg nav-link" value="signUp">
+                <input type=button onClick="location.href = 'HomePage.html'" class="btn btn-primary btn-lg nav-link" value="Go to home page" />
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
