@@ -39,7 +39,6 @@ function showAllItems() {
 }
 
 //
-
 function setFilters() {
     for (let i = 0; i < category_items.length; i++) {
         let floatPrice = parseFloat(
@@ -70,24 +69,48 @@ function setFilters() {
     document.getElementById("max-price").min = MAX / 2;
     document.getElementById("max-price").max = MAX;
 
-    document.getElementById("max-price-txt").innerHTML = `$${MIN}`;
-    document.getElementById("max-price-txt").innerHTML = `$${MAX}`;
+    document.getElementById("min-price-txt").innerHTML = `$${MIN}`;
+    document.getElementById("max-price-txt").innerHTML = `$${MAX / 2}`;
+
+    min_price = MIN;
+    max_price = MAX;
+    review_scores_rating = 1;
+    bedrooms_number = 1;
+}
+
+function setModalEvents() {
+    document.querySelectorAll(".open-modal").forEach(function (trigger) {
+        trigger.addEventListener("click", function () {
+            hideAllModalWindows();
+            showModalWindow(this);
+        });
+    });
+
+    document.querySelectorAll(".modal-hide").forEach(function (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            hideAllModalWindows();
+        });
+    });
+
+    document.querySelector(".modal-fader").addEventListener("click", function () {
+        hideAllModalWindows();
+    });
 }
 
 function setEvents() {
-    $("#min-price").on("change mousemove", function () {
+    $("#min-price").on("change", function () {
         min_price = parseInt($("#min-price").val());
         $("#min-price-txt").text("$" + min_price);
         showItemsFiltered();
     });
 
-    $("#max-price").on("change mousemove", function () {
+    $("#max-price").on("change", function () {
         max_price = parseInt($("#max-price").val());
         $("#max-price-txt").text("$" + max_price);
         showItemsFiltered();
     });
 
-    $("#rating").on("change mousemove", function () {
+    $("#rating").on("change", function () {
         review_scores_rating = parseInt($("#rating").val());
         $("#rating-txt").text(review_scores_rating);
         showItemsFiltered();
@@ -95,11 +118,61 @@ function setEvents() {
 
     document.getElementById("rooms").max = max_bedrooms;
 
-    $("#rooms").on("change mousemove", function () {
+    $("#rooms").on("change", function () {
         bedrooms_number = parseInt($("#rooms").val());
         $("#room-txt").text(bedrooms_number);
         showItemsFiltered();
     });
+}
+
+function showItemsFiltered() {
+    $("#display-items-div").empty();
+    for (let i = 0; i < category_items.length; i++) {
+        let key = category_items[i]["id"];
+        if (
+            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) <= max_price &&
+            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) >= min_price &&
+            parseFloat(category_items[i]["review_scores_rating"]) >= review_scores_rating &&
+            parseFloat(category_items[i]["bedrooms"]) >= bedrooms_number &&
+            !isAppartmentTaken(category_items[i])
+        ) {
+            $("#display-items-div").append(card(category_items[i], key));
+        }
+    }
+}
+
+function isAppartmentTaken(category_item) {
+    let result = false;
+    // get dates
+    const filterCheckinDate = new Date(checkin_date);
+    const filterCheckoutDate = new Date(checkout_date);
+    var allUsersBookings = [];
+
+    var allUsersBookingsValue = localStorage.getItem(cGroup50 + userBookingsTxt);
+
+    if (allUsersBookingsValue && allUsersBookingsValue.length > 0) {
+        allUsersBookings = JSON.parse(allUsersBookingsValue);
+        for (var i = 0; i < allUsersBookings.length; i++) {
+            var elem = allUsersBookings[i];
+            for (var j = 0; j < elem.bookings.length; j++) {
+                var book = elem.bookings[j];
+                // checkings
+                if (category_item.id == book.itemId.toString()) {
+                    const bookCheckinDate = new Date(book.fromDate);
+                    const bookCheckoutDate = new Date(book.toDate);
+                    if (!(filterCheckoutDate < bookCheckinDate || filterCheckinDate > bookCheckoutDate)) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            if (result) {
+                break;
+            }
+        }
+    }
+
+    return result;
 }
 
 
@@ -170,63 +243,6 @@ function setDates() {
     sessionStorage.setItem(cGroup50 + tempBookTxt, JSON.stringify(tempBook));
     alert("Dates Saved!");
     showItemsFiltered();
-}
-
-
-function showItemsFiltered() {
-    $("#display-items-div").empty();
-    for (let i = 0; i < category_items.length; i++) {
-        let key = category_items[i]["id"];
-        if (
-            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) <= max_price &&
-            parseFloat(category_items[i]["price"].replace(" ", "").replace("$", "")) >= min_price &&
-            parseFloat(category_items[i]["review_scores_rating"]) >= review_scores_rating &&
-            parseFloat(category_items[i]["bedrooms"]) >= bedrooms_number &&
-            checkAvilabilty(category_items[i])
-        ) {
-            $("#display-items-div").append(card(category_items[i], key));
-        }
-    }
-}
-
-function checkAvilabilty(category_item) {
-    let isRoomAvilable = true;
-    const checkinDate = new Date(checkin_date);
-    const checkoutDate = new Date(checkout_date);
-    if (category_item["reserved_dates"] && category_item["reserved_dates"].length > 0) {
-        category_item["reserved_dates"].forEach(bookingDates => {
-            const bookingCheckinDate = new Date(bookingDates.checkin_date)
-            const bookingCheckoutDate = new Date(bookingDates.checkout_date)
-            if (bookingCheckinDate >= checkinDate && bookingCheckinDate <= checkoutDate) {
-                isRoomAvilable = false;
-            }
-            if (bookingCheckoutDate >= checkinDate && bookingCheckoutDate <= checkoutDate) {
-                isRoomAvilaÅble = false;
-            }
-        })
-    }
-    return isRoomAvilable;
-}
-
-
-
-function setModalEvents() {
-    document.querySelectorAll(".open-modal").forEach(function (trigger) {
-        trigger.addEventListener("click", function () {
-            hideAllModalWindows();
-            showModalWindow(this);
-        });
-    });
-
-    document.querySelectorAll(".modal-hide").forEach(function (closeBtn) {
-        closeBtn.addEventListener("click", function () {
-            hideAllModalWindows();
-        });
-    });
-
-    document.querySelector(".modal-fader").addEventListener("click", function () {
-        hideAllModalWindows();
-    });
 }
 
 //                                               ****************** RENT APARTMENT *****************

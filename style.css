@@ -103,3 +103,10 @@ img {
     font-size: 12px;
     padding: 1px 4px;
 }
+
+.card.sticky {
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    max-width: 400px;
+}
