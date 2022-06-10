@@ -110,3 +110,10 @@ img {
     left: 200px;
     max-width: 400px;
 }
+
+.card.sticky2 {
+    position: fixed;
+    top: 100px;
+    left: 300px;
+    max-width: 400px;
+}

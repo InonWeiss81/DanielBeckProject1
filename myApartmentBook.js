@@ -7,6 +7,7 @@ $(function () {
 });
 
 getBookItems = () => {
+
     const myItems = getBookCategoryItems();
     $("#ph").empty();
     if (myItems.length == 0) {
@@ -15,22 +16,27 @@ getBookItems = () => {
         $("#ph").append(noBooksMassageElement);
     }
     for (let i = 0; i < myItems.length; i++) {
-        let key = myItems[i]["id"];
+        let key = myItems[i].booking["id"];
 
         let item_content =
             '<div class="col-12 col-md-12 text-center product-card"' +
             '<div><b>' +
-            myItems[i]["name"] +
+            myItems[i].booking["name"] +
             '<br>' +
-            'ID ' + myItems[i]["id"] +
+            'ID ' + myItems[i].booking["id"] +
             '<br>' +
-            'Rating ' + myItems[i]["review_scores_rating"] +
+            'Rating ' + myItems[i].booking["review_scores_rating"] +
             '<br>' +
-            'Rooms ' + myItems[i]["bedrooms"] + `<br>` + myItems[i]["price"] + `<br>` +
+            'Rooms ' + myItems[i].booking["bedrooms"] + `<br>` + myItems[i].booking["price"] + `<br>` +
             '</b><br><img src="' +
-            myItems[i]["picture_url"] +
-            '"alt="picture_url"><p>' + `<br>` + '<p>' +
-            `<button class="button" onclick={RemoveFromBookings(${key})}>Remove From bookings</button>` + "</p>" +
+            myItems[i].booking["picture_url"] +
+            '"alt="picture_url">' + `<br>` +
+            '<p><b>' +
+            `Booked from ${myItems[i].fromDate} to ${myItems[i].toDate}` +
+            "</b></p>" +
+            '<p>' +
+            `<button class="button" onclick={RemoveFromBookings(${key})}>Remove From bookings</button>` +
+            "</p>" +
             "<p>" +
             `<br>` +
             `<button  class="button" onclick={openModal(${key})}>More Details</button>` +
@@ -67,17 +73,11 @@ function getBookCategoryItems() {
                 for (var j = 0; j < bookings.length; j++) {
                     var book = bookings[j];
                     if (item.id == book.itemId.toString()) {
-                        result.push(item);
+                        result.push({ booking: item, fromDate: book.fromDate, toDate: book.toDate });
                     }
                 }
             }
         }
-        else {
-
-        }
-    }
-    else {
-
     }
     return result;
 }

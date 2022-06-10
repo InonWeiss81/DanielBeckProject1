@@ -11,7 +11,7 @@
     <link rel="shortcut icon" sizes="76x76" type="image/x-icon" href="index.ico" />
 
     <script src="./utils.js"></script>
-    <!--<script src="Script.js"></script>-->
+    <!--<script src="AllApartments.js"></script>-->
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./sharedStyles.css">
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
@@ -37,11 +37,25 @@
     <div>
         <div class="container">
             <div class="row">
-                <div class="col-10 col-md-10">
+                <div class="col-12 col-md-3">
+                    <div class="card px-2 sticky2">
+                        <br />
+                        <h2 class="text-center">Filter by Date</h2>
+                        <br />
+                        <div class="input-group">
+                            <input class="form-control" type="date" placeholder="dd-mm-yyyy" id="checkin" name="checkin" />
+                            <input class="form-control" type="date" placeholder="dd-mm-yyyy" id="checkout" name="checkout" />
+                        </div>
+                        <br />
+                        <button onclick="setDates()">Set Dates</button>
+                        <br />
+                    </div>
+                </div>
+                <div class="col-12 col-md-9">
                     <div class="card">
                         <div class="card-body">
                             <div class="row" id="head"></div>
-                            <div class="row" id="ph"></div>
+                            <div class="row" id="display-items-div"></div>
                         </div>
                     </div>
                 </div>

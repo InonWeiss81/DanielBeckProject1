@@ -57,20 +57,21 @@ function setFilters() {
         }
     }
 
-    document.getElementById("min-price").value = MIN;
-    document.getElementById("max-price").value = MAX;
-
-    document.getElementById("min-price").step = MAX % 4;
-    document.getElementById("max-price").step = MAX % 4;
-
     document.getElementById("min-price").min = MIN;
     document.getElementById("min-price").max = MAX / 2;
 
     document.getElementById("max-price").min = MAX / 2;
     document.getElementById("max-price").max = MAX;
 
+    var step = MAX / 2 > 50 ? 5 : 1;
+    document.getElementById("min-price").step = step;
+    document.getElementById("max-price").step = step;
+
+    document.getElementById("min-price").value = MIN;
+    document.getElementById("max-price").value = MAX;
+
     document.getElementById("min-price-txt").innerHTML = `$${MIN}`;
-    document.getElementById("max-price-txt").innerHTML = `$${MAX / 2}`;
+    document.getElementById("max-price-txt").innerHTML = `$${MAX}`;
 
     min_price = MIN;
     max_price = MAX;
